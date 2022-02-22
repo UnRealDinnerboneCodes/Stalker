@@ -1,0 +1,17 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'java'
+    id "maven-publish"
+    id 'java-library'
+}
+
+apply from: 'https://raw.githubusercontent.com/UnRealDinnerbone/GradleHelpers/helpers/base.gradle'
+apply from: 'https://raw.githubusercontent.com/UnRealDinnerbone/GradleHelpers/helpers/shade.gradle'
+
+dependencies {
+    shade('com.unrealdinnerbone:UnRealConfig:4.0.0+build.36')
+    shade('com.unrealdinnerbone:UnRealLib:3.2.0+build.97')
+    shade 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
+    shade 'org.apache.commons:commons-lang3:3.12.0'
+
+}
