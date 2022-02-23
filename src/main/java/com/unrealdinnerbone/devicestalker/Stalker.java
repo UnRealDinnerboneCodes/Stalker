@@ -36,7 +36,7 @@ public class Stalker
         options.setConnectionTimeout(10);
         client.connect(options);
 
-        CountDownLatch receivedSignal = new CountDownLatch(10);
+//        CountDownLatch receivedSignal = new CountDownLatch(10);
         client.subscribe("rtl_433/#", (topic, msg) -> {
             String payload = new String(msg.getPayload());
             if(!BLACKLIST.contains(topic)) {
@@ -47,8 +47,8 @@ public class Stalker
             }
 
             LOGGER.info("Received {} message: {}", topic, new String(payload));
-            receivedSignal.countDown();
+//            receivedSignal.countDown();
         });
-        receivedSignal.await(1, TimeUnit.MINUTES);
+//        receivedSignal.await(1, TimeUnit.MINUTES);
     }
 }
