@@ -25,50 +25,48 @@ public class Stalker
         BLACKLIST.add("rtl_433/Solight-TE44/34");
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         LOGGER.info("Stalker started!");
 
-        TaskScheduler.scheduleRepeatingTask( 30, TimeUnit.MINUTES, () -> {
-            try {
-                String publisherId = UUID.randomUUID().toString();
-                IMqttClient client = new MqttClient("tcp://10.0.0.167:1885",publisherId);
-                MqttConnectOptions options = new MqttConnectOptions();
-                options.setAutomaticReconnect(true);
-                options.setCleanSession(true);
-                options.setConnectionTimeout(10);
-                client.connect(options);
-                client.subscribe("rtl_433/#", (topic, msg) -> {
-                    String payload = new String(msg.getPayload());
-                    if(!BLACKLIST.contains(topic)) {
-                        DiscordWebhook.of(WEBHOOK_URL)
-                                .setUsername("Stalker")
-                                .setContent(StringEscapeUtils.escapeJson(payload))
-                                .execute();
-                    }
-
-                    LOGGER.info("Received {} message: {}", topic, payload);
-                });
-
-
-                new Timer().schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        try {
-                            client.disconnect();
-                        }catch(MqttException e) {
-                            LOGGER.error("Error while disconnecting", e);
+        TaskScheduler.scheduleRepeatingTask(30, TimeUnit.MINUTES, new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    String publisherId = UUID.randomUUID().toString();
+                    IMqttClient client = new MqttClient("tcp://10.0.0.167:1885",publisherId);
+                    MqttConnectOptions options = new MqttConnectOptions();
+                    options.setAutomaticReconnect(true);
+                    options.setCleanSession(true);
+                    options.setConnectionTimeout(10);
+                    client.connect(options);
+                    client.subscribe("rtl_433/#", (topic, msg) -> {
+                        String payload = new String(msg.getPayload());
+                        if(!BLACKLIST.contains(topic)) {
+                            DiscordWebhook.of(WEBHOOK_URL)
+                                    .setUsername("Stalker")
+                                    .setContent(StringEscapeUtils.escapeJson(payload))
+                                    .execute();
                         }
-                    }
-                }, TimeUnit.MINUTES.toMillis(30));
 
-            }catch(Exception e) {
-                LOGGER.error("Error while connecting to MQTT", e);
+                        LOGGER.info("Received {} message: {}", topic, payload);
+                    });
+
+
+                    new Timer().schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            try {
+                                client.disconnect();
+                            }catch(MqttException e) {
+                                LOGGER.error("Error while disconnecting", e);
+                            }
+                        }
+                    }, TimeUnit.MINUTES.toMillis(30));
+
+                }catch(Exception e) {
+                    LOGGER.error("Error while connecting to MQTT", e);
+                }
             }
-
-
         });
-
-//        CountDownLatch receivedSignal = new CountDownLatch(10);
-//        receivedSignal.await(1, TimeUnit.MINUTES);
     }
 }
