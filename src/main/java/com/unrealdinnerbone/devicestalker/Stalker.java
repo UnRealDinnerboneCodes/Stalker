@@ -23,7 +23,7 @@ public class Stalker
     static {
         BLACKLIST.add("rtl_433/LaCrosse-TX141THBv2/169");
         BLACKLIST.add("rtl_433/Solight-TE44/34");
-        BLACKLIST.add("rtl_433/Acurite");
+        BLACKLIST.add("rtl_433/Acurite-Tower/9265");
     }
 
     public static void main(String[] args) {
