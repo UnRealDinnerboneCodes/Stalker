@@ -90,7 +90,7 @@ public class Stalker
             }
         };
         TaskScheduler.scheduleRepeatingTask(30, TimeUnit.SECONDS, timerTask);
-        TaskScheduler.scheduleTask(6, TimeUnit.HOURS, task -> {
+        scheduleTask(6, TimeUnit.HOURS, task -> {
             LOGGER.info("Cancelling Watch Task");
             timerTask.cancel();
         });
@@ -101,6 +101,17 @@ public class Stalker
                 .atZone(ZoneId.of("America/Chicago"))
                 .with(TemporalAdjusters.nextOrSame(dayOfWeek))
                 .with(LocalTime.NOON);
+    }
+
+    public static TimerTask scheduleTask(int time, TimeUnit timeUnit, TaskScheduler.Task task) {
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                task.run(this);
+            }
+        };
+        TaskScheduler.getTimer().schedule(timerTask, timeUnit.toMillis(time));
+        return timerTask;
     }
 
 
