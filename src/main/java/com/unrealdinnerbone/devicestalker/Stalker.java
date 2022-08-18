@@ -50,6 +50,8 @@ public class Stalker
 //        TaskScheduler.scheduleTask(thursday.toInstant(), task -> handleTask());
     }
 
+    private static Map<String, AtomicReference<Double>> values = new HashMap<>();
+
     private static void handleTask() {
         Instant nextTime = Instant.now().with(TemporalAdjusters.next(DayOfWeek.from(Instant.now())));
         LOGGER.info("Scheduling next task at {}", formatter.format(nextTime));
@@ -58,7 +60,7 @@ public class Stalker
     }
     private static void runTask() {
         LOGGER.info("Starting Deck Bot!");
-        Map<String, AtomicReference<Double>> values = new HashMap<>();
+
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
@@ -71,14 +73,18 @@ public class Stalker
                         }
                         if(values.get(type.name).get() != deckInfo.personalInfo().elapsedTimePercentage()) {
                             LOGGER.info("New value for {}: {}", type.name, deckInfo.personalInfo().elapsedTimePercentage());
-                            String timeStamp = "<t:" + deckInfo.personalInfo().latestOrderSeconds() +">";
                             DiscordWebhook.of(URL)
                                             .addEmbed(EmbedObject.builder()
                                                     .author(new EmbedObject.Author(type.name, type.getInfoURL(), "https://unreal.codes/kevStonk.png"))
                                                     .color(Color.CYAN)
-                                                    .description("Im now at " + deckInfo.personalInfo().elapsedTimePercentage() + "%" + " Orders At: " + timeStamp)
+                                                    .field(new EmbedObject.Field("New %", String.valueOf(deckInfo.personalInfo().elapsedTimePercentage()), true))
+                                                    .field(new EmbedObject.Field("Old %", String.valueOf(values.get(type.name).get()), true))
+                                                    .field(new EmbedObject.Field("Jump %", String.valueOf(deckInfo.personalInfo().elapsedTimePercentage() - values.get(type.name).get()), true))
+                                                    .field(EmbedObject.Field.of("Order Time", getTimeStamp(type.timestamp()), true))
+                                                    .field(EmbedObject.Field.of("Last Processed Order", getTimeStamp(deckInfo.personalInfo().latestOrderSeconds()), true))
                                                     .build())
-                                    .setUsername(type.name)
+                                    .setUsername("Deck Updates")
+                                    .setAvatarUrl("https://pbs.twimg.com/profile_images/1448687317414080515/jKt70qEv_400x400.png")
                                     .execute();
                             values.get(type.name).set(deckInfo.personalInfo().elapsedTimePercentage());
                         }else {
@@ -96,6 +102,13 @@ public class Stalker
 //            LOGGER.info("Cancelling Watch Task");
 //            timerTask.cancel();
 //        });
+    }
+
+    private static String getTimeStampR(long seconds) {
+        return "<t:" + seconds +":R:>";
+    }
+    private static String getTimeStamp(long seconds) {
+        return "<t:" + seconds +">";
     }
 
     private static ZonedDateTime getZonedDataTimeFor(DayOfWeek dayOfWeek) {
