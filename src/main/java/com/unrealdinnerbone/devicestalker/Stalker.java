@@ -38,15 +38,16 @@ public class Stalker
 
     public static void main(String[] args) {
         LOGGER.info("Stalker started!");
+        runTask();
 
         ZonedDateTime monday = getZonedDataTimeFor(DayOfWeek.MONDAY);
         ZonedDateTime thursday = getZonedDataTimeFor(DayOfWeek.THURSDAY);
 
 
-        LOGGER.info("Next Monday Is: {}", formatter.format(monday));
-        LOGGER.info("Next Thursday Is: {}", formatter.format(thursday));
-        TaskScheduler.scheduleTask(monday.toInstant(), task -> handleTask());
-        TaskScheduler.scheduleTask(thursday.toInstant(), task -> handleTask());
+//        LOGGER.info("Next Monday Is: {}", formatter.format(monday));
+//        LOGGER.info("Next Thursday Is: {}", formatter.format(thursday));
+//        TaskScheduler.scheduleTask(monday.toInstant(), task -> handleTask());
+//        TaskScheduler.scheduleTask(thursday.toInstant(), task -> handleTask());
     }
 
     private static void handleTask() {
@@ -90,10 +91,10 @@ public class Stalker
             }
         };
         TaskScheduler.scheduleRepeatingTask(30, TimeUnit.SECONDS, timerTask);
-        scheduleTask(6, TimeUnit.HOURS, task -> {
-            LOGGER.info("Cancelling Watch Task");
-            timerTask.cancel();
-        });
+//        scheduleTask(6, TimeUnit.HOURS, task -> {
+//            LOGGER.info("Cancelling Watch Task");
+//            timerTask.cancel();
+//        });
     }
 
     private static ZonedDateTime getZonedDataTimeFor(DayOfWeek dayOfWeek) {
