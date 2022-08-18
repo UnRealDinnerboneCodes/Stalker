@@ -71,11 +71,12 @@ public class Stalker
                         }
                         if(values.get(type.name).get() != deckInfo.personalInfo().elapsedTimePercentage()) {
                             LOGGER.info("New value for {}: {}", type.name, deckInfo.personalInfo().elapsedTimePercentage());
+                            String timeStamp = "<t:" + deckInfo.personalInfo().latestOrderSeconds() +">";
                             DiscordWebhook.of(URL)
                                             .addEmbed(EmbedObject.builder()
                                                     .author(new EmbedObject.Author(type.name, type.getInfoURL(), "https://unreal.codes/kevStonk.png"))
                                                     .color(Color.CYAN)
-                                                    .description("Im now at " + deckInfo.personalInfo().elapsedTimePercentage() + "%")
+                                                    .description("Im now at " + deckInfo.personalInfo().elapsedTimePercentage() + "%" + " Orders At: " + timeStamp)
                                                     .build())
                                     .setUsername(type.name)
                                     .execute();
