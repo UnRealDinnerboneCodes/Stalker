@@ -44,7 +44,7 @@ public class Stalker
 //        ZonedDateTime monday = getZonedDataTimeFor(DayOfWeek.MONDAY);
 //        ZonedDateTime thursday = getZonedDataTimeFor(DayOfWeek.THURSDAY);
 
-        checkForDecks();
+//        checkForDecks();
 //        LOGGER.info("Next Monday Is: {}", formatter.format(monday));
 //        LOGGER.info("Next Thursday Is: {}", formatter.format(thursday));
 //        TaskScheduler.scheduleTask(monday.toInstant(), task -> handleTask());
