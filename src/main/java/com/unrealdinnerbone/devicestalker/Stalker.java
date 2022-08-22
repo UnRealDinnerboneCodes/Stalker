@@ -38,16 +38,17 @@ public class Stalker
     }
 
     public static void main(String[] args) {
+        runTask();
         LOGGER.info("Stalker started!");
 
-        ZonedDateTime monday = getZonedDataTimeFor(DayOfWeek.MONDAY);
-        ZonedDateTime thursday = getZonedDataTimeFor(DayOfWeek.THURSDAY);
+//        ZonedDateTime monday = getZonedDataTimeFor(DayOfWeek.MONDAY);
+//        ZonedDateTime thursday = getZonedDataTimeFor(DayOfWeek.THURSDAY);
 
         checkForDecks();
-        LOGGER.info("Next Monday Is: {}", formatter.format(monday));
-        LOGGER.info("Next Thursday Is: {}", formatter.format(thursday));
-        TaskScheduler.scheduleTask(monday.toInstant(), task -> handleTask());
-        TaskScheduler.scheduleTask(thursday.toInstant(), task -> handleTask());
+//        LOGGER.info("Next Monday Is: {}", formatter.format(monday));
+//        LOGGER.info("Next Thursday Is: {}", formatter.format(thursday));
+//        TaskScheduler.scheduleTask(monday.toInstant(), task -> handleTask());
+//        TaskScheduler.scheduleTask(thursday.toInstant(), task -> handleTask());
     }
 
     private static final Map<String, AtomicReference<Double>> values = new HashMap<>();
@@ -68,10 +69,10 @@ public class Stalker
             }
         };
         TaskScheduler.scheduleRepeatingTask(30, TimeUnit.SECONDS, timerTask);
-        scheduleTask(6, TimeUnit.HOURS, task -> {
-            LOGGER.info("Cancelling Watch Task");
-            timerTask.cancel();
-        });
+//        scheduleTask(6, TimeUnit.HOURS, task -> {
+//            LOGGER.info("Cancelling Watch Task");
+//            timerTask.cancel();
+//        });
     }
 
     private static void checkForDecks() {
