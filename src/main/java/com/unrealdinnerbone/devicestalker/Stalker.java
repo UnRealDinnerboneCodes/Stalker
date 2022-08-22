@@ -31,10 +31,11 @@ public class Stalker
     private static final String URL = System.getenv().getOrDefault("WEBHOOK_URL", "");
 
     static {
-        types.add(new DeckType("modmuss", DeckType.Location.UK, DeckType.Level._512, 1635022040));
-        types.add(new DeckType("gaz", DeckType.Location.UK, DeckType.Level._512, 1644261865));
-        types.add(new DeckType("unreal", DeckType.Location.US, DeckType.Level._512, 1644252600));
+        types.add(new DeckType("Modmuss", DeckType.Location.UK, DeckType.Level._512, 1635022040));
+        types.add(new DeckType("Gaz", DeckType.Location.UK, DeckType.Level._512, 1644261865));
+        types.add(new DeckType("UnReal", DeckType.Location.US, DeckType.Level._512, 1644261972));
         types.add(new DeckType("Jake", DeckType.Location.UK, DeckType.Level._512, 1659379850));
+        types.add(new DeckType("Max", DeckType.Location.EU, DeckType.Level._512, 1639598215));
     }
 
     public static void main(String[] args) {
@@ -76,6 +77,7 @@ public class Stalker
     }
 
     private static void checkForDecks() {
+        List<EmbedObject> embedObjects = new ArrayList<>();
         for (DeckType type : types) {
             try {
                 HttpResponse<String> response = HttpUtils.get(type.getAPIUrl());
@@ -85,19 +87,15 @@ public class Stalker
                 }
                 if (values.get(type.name).get() != deckInfo.personalInfo().elapsedTimePercentage()) {
                     LOGGER.info("New value for {}: {}", type.name, deckInfo.personalInfo().elapsedTimePercentage());
-                    DiscordWebhook.of(URL)
-                            .addEmbed(EmbedObject.builder()
-                                    .author(new EmbedObject.Author(type.name, type.getInfoURL(), "https://unreal.codes/kevStonk.png"))
-                                    .color(Color.CYAN)
-                                    .field(new EmbedObject.Field("New %", String.valueOf(deckInfo.personalInfo().elapsedTimePercentage()), true))
-                                    .field(new EmbedObject.Field("Old %", String.valueOf(values.get(type.name).get()), true))
-                                    .field(new EmbedObject.Field("Jump %", String.valueOf(deckInfo.personalInfo().elapsedTimePercentage() - values.get(type.name).get()), true))
-                                    .field(EmbedObject.Field.of("Order Time", getTimeStamp(type.timestamp()), true))
-                                    .field(EmbedObject.Field.of("Last Processed Order", getTimeStamp(deckInfo.personalInfo().latestOrderSeconds()), true))
-                                    .build())
-                            .setUsername("Deck Updates")
-                            .setAvatarUrl("https://pbs.twimg.com/profile_images/1448687317414080515/jKt70qEv_400x400.png")
-                            .execute();
+                    embedObjects.add(EmbedObject.builder()
+                            .author(new EmbedObject.Author(type.name, type.getInfoURL(), "https://unreal.codes/kevStonk.png"))
+                            .color(Color.CYAN)
+                            .field(new EmbedObject.Field("New %", String.valueOf(deckInfo.personalInfo().elapsedTimePercentage()), true))
+                            .field(new EmbedObject.Field("Old %", String.valueOf(values.get(type.name).get()), true))
+                            .field(new EmbedObject.Field("Jump %", String.valueOf(deckInfo.personalInfo().elapsedTimePercentage() - values.get(type.name).get()), true))
+                            .field(EmbedObject.Field.of("Order Time", getTimeStamp(type.timestamp()), true))
+                            .field(EmbedObject.Field.of("Last Processed Order", getTimeStamp(deckInfo.personalInfo().latestOrderSeconds()), true))
+                            .build());
                     values.get(type.name).set(deckInfo.personalInfo().elapsedTimePercentage());
                 } else {
                     LOGGER.debug("No change for {}", type.name);
@@ -105,6 +103,20 @@ public class Stalker
             } catch (IOException | InterruptedException e) {
                 LOGGER.error("Error getting info for {}", type.name, e);
             }
+        }
+
+        DiscordWebhook discordWebhook = DiscordWebhook.of(URL)
+                .setUsername("Deck Updates")
+                .setAvatarUrl("https://pbs.twimg.com/profile_images/1448687317414080515/jKt70qEv_400x400.png");
+
+        for (EmbedObject embedObject : embedObjects) {
+            discordWebhook.addEmbed(embedObject);
+        }
+
+        try {
+            discordWebhook.execute();
+        } catch (IOException | InterruptedException e) {
+            LOGGER.error("Error Sending Webhook", e);
         }
     }
 
