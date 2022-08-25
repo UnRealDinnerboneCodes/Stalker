@@ -114,7 +114,9 @@ public class Stalker
         }
 
         try {
-            discordWebhook.execute();
+            if(!embedObjects.isEmpty()) {
+                discordWebhook.execute();
+            }
         } catch (IOException | InterruptedException e) {
             LOGGER.error("Error Sending Webhook", e);
         }
