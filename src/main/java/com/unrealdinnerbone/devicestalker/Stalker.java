@@ -31,11 +31,11 @@ public class Stalker
     private static final String URL = System.getenv().getOrDefault("WEBHOOK_URL", "");
 
     static {
-        types.add(new DeckType("Modmuss", DeckType.Location.UK, DeckType.Level._512, 1635022040));
+//        types.add(new DeckType("Modmuss", DeckType.Location.UK, DeckType.Level._512, 1635022040));
         types.add(new DeckType("Gaz", DeckType.Location.UK, DeckType.Level._512, 1644261865));
         types.add(new DeckType("UnReal", DeckType.Location.US, DeckType.Level._512, 1644261972));
         types.add(new DeckType("Jake", DeckType.Location.UK, DeckType.Level._512, 1659379850));
-        types.add(new DeckType("Max", DeckType.Location.EU, DeckType.Level._512, 1639598215));
+//        types.add(new DeckType("Max", DeckType.Location.EU, DeckType.Level._512, 1639598215));
     }
 
     public static void main(String[] args) {
