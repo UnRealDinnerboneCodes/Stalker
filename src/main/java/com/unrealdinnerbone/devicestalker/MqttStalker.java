@@ -1,5 +1,6 @@
 package com.unrealdinnerbone.devicestalker;
 
+import com.unrealdinnerbone.unreallib.discord.DiscordWebhook;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -8,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MqttStalker implements IStalker{
 
@@ -19,6 +21,8 @@ public class MqttStalker implements IStalker{
     public void run() {
         try {
             MqttConnectOptions options = new MqttConnectOptions();
+            options.setUserName("mqtt");
+            options.setPassword("mqtt!".toCharArray());
             IMqttClient client = new MqttClient("tcp://10.0.0.115:1885","StalkerClient-Dev");
             options.setAutomaticReconnect(true);
             options.setCleanSession(true);
@@ -35,13 +39,23 @@ public class MqttStalker implements IStalker{
 //                    });
             List<String> blacklist = new ArrayList<>();
 //            blacklist.add("rtl_433/Acurite-6045M/77");
-            blacklist.add("rtl_433/Badger-ORION/937670");
+//            blacklist.add("rtl_433/Badger-ORION/937670");
 //            blacklist.add("rtl_433/LaCrosse-TX141THBv2/234");
 //            blacklist.add("rtl_433/LaCrosse-TX141THBv2/122");
-            client.subscribe("rtl_433/#", (topic, msg) -> {
-                String payload = new String(msg.getPayload());
-                LOGGER.info("Received {} message: {}", topic, payload);
+            client.subscribe("homeassistant/status", (topic, msg) -> {
+                for (Map.Entry<String, String> stringStringEntry : Messages.MESSAGES.entrySet()) {
+                    String key = "the_" + stringStringEntry.getKey();
+                    String value = stringStringEntry.getValue();
+                    client.publish("homeassistant/sensor/" + key + "/config", value.replace( "\"unique_id\": \"", " \"unique_id\": \"the_").getBytes(), 0, false);
+                }
             });
+
+            for (Map.Entry<String, String> stringStringEntry : Messages.MESSAGES.entrySet()) {
+                String key = "the_" + stringStringEntry.getKey();
+                String value = stringStringEntry.getValue();
+                client.publish("homeassistant/sensor/" + key + "/config", value.replace( "\"unique_id\": \"", " \"unique_id\": \"the_").getBytes(), 0, false);
+            }
+            //rtl_433/+/events
 
 
         }catch(Exception e) {
