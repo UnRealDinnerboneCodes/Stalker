@@ -1,6 +1,5 @@
 package com.unrealdinnerbone.devicestalker;
 
-import com.unrealdinnerbone.unreallib.discord.DiscordWebhook;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
