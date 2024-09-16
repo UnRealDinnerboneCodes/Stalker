@@ -10,10 +10,10 @@ apply from: 'https://raw.githubusercontent.com/UnRealDinnerbone/GradleHelpers/he
 
 dependencies {
 //    shade('com.unrealdinnerbone:UnRealConfig:4.0.0+build.36')
-//    shade "com.unrealdinnerbone:CurseAuthorsAPI:1.0.0+build.5"
+    shade "com.unrealdinnerbone:CurseAuthorsAPI:1.0.0+build.5"
     shade 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
 //    shade 'org.apache.commons:commons-lang3:3.12.0'
-//    shade 'org.fusesource.jansi:jansi:2.4.0'
+    shade 'org.fusesource.jansi:jansi:2.4.0'
     shade 'ch.qos.logback:logback-classic:1.4.5'
 
 }

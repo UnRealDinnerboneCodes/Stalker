@@ -1,5 +1,6 @@
 package com.unrealdinnerbone.devicestalker;
 
+import com.unrealdinnerbone.unreallib.TaskScheduler;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -42,16 +43,26 @@ public class MqttStalker implements IStalker{
 //            blacklist.add("rtl_433/LaCrosse-TX141THBv2/234");
 //            blacklist.add("rtl_433/LaCrosse-TX141THBv2/122");
             client.subscribe("homeassistant/status", (topic, msg) -> {
+                LOGGER.info("Got Message: " + new String(msg.getPayload()));
                 for (Map.Entry<String, String> stringStringEntry : Messages.MESSAGES.entrySet()) {
                     String key = "the_" + stringStringEntry.getKey();
                     String value = stringStringEntry.getValue();
-                    client.publish("homeassistant/sensor/" + key + "/config", value.replace( "\"unique_id\": \"", " \"unique_id\": \"the_").getBytes(), 0, false);
+                    String bytes = value.replace("\"unique_id\": \"", " \"unique_id\": \"the_");
+                    LOGGER.info("Sending: " + bytes);
+                    TaskScheduler.runAsync(() -> {
+                        try {
+                            client.publish("homeassistant/sensor/" + key + "/config", bytes.getBytes(), 0, false);
+                        } catch (Exception e) {
+                            LOGGER.error("Error while sending message", e);
+                        }
+                    });
                 }
             });
 
             for (Map.Entry<String, String> stringStringEntry : Messages.MESSAGES.entrySet()) {
                 String key = "the_" + stringStringEntry.getKey();
                 String value = stringStringEntry.getValue();
+                LOGGER.info("Sending2: " + value);
                 client.publish("homeassistant/sensor/" + key + "/config", value.replace( "\"unique_id\": \"", " \"unique_id\": \"the_").getBytes(), 0, false);
             }
             //rtl_433/+/events
