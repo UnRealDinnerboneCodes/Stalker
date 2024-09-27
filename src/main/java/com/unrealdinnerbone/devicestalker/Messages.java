@@ -65,6 +65,22 @@ public class Messages {
             }
         }""");
 
+        MESSAGES.put("weathy_wind_max_m_s",  """
+        {
+            "name": "weathy_wind_max_m_s",
+            "unique_id": "weathy_wind_max_m_s",
+            "state_topic": "rtl_433/Fineoffset-WS90/19606",
+            "unit_of_measurement": "m/s",
+            "force_update": true,
+            "value_template": "{{ value_json.wind_max_m_s }}",
+            "device": {
+              "name": "Weather Station",
+              "identifiers": "Acurite-Fineoffset-WS90-19606"
+            }
+        }""");
+
+
+
 
 
         MESSAGES.put("weathy_light_lux",  """
@@ -86,7 +102,7 @@ public class Messages {
             "name": "weathy_rain_in",
             "unique_id": "weathy_rain_in",
             "state_topic": "rtl_433/Fineoffset-WS90/19606",
-            "unit_of_measurement": "lx",
+            "unit_of_measurement": "in",
             "force_update": true,
             "value_template": "{{ value_json.rain_in }}",
             "device": {
