@@ -23,7 +23,7 @@ public class MqttStalker implements IStalker{
             MqttConnectOptions options = new MqttConnectOptions();
             options.setUserName("mqtt");
             options.setPassword("mqtt!".toCharArray());
-            IMqttClient client = new MqttClient("tcp://10.0.0.115:1885","StalkerClient-Dev");
+            IMqttClient client = new MqttClient("tcp://192.168.1.115:1885","StalkerClient-Dev");
             options.setAutomaticReconnect(true);
             options.setCleanSession(true);
             options.setConnectionTimeout(0);
